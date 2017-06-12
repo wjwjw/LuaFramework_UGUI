@@ -63,18 +63,21 @@ end
 
 --单击事件--
 function PromptCtrl.OnClick(go)
-	if TestProtoType == ProtocalType.BINARY then
-		this.TestSendBinary();
-	end
-	if TestProtoType == ProtocalType.PB_LUA then
-		this.TestSendPblua();
-	end
-	if TestProtoType == ProtocalType.PBC then
-		this.TestSendPbc();
-	end
-	if TestProtoType == ProtocalType.SPROTO then
-		this.TestSendSproto();
-	end
+
+    this.sendYCMsg();
+
+	-- if TestProtoType == ProtocalType.BINARY then
+	-- 	this.TestSendBinary();
+	-- end
+	-- if TestProtoType == ProtocalType.PB_LUA then
+	-- 	this.TestSendPblua();
+	-- end
+	-- if TestProtoType == ProtocalType.PBC then
+	-- 	this.TestSendPbc();
+	-- end
+	-- if TestProtoType == ProtocalType.SPROTO then
+	-- 	this.TestSendSproto();
+	-- end
 	logWarn("OnClick---->>>"..go.name);
 end
 
@@ -155,6 +158,7 @@ function PromptCtrl.TestSendPbc()
         }
     }
     local code = protobuf.encode("tutorial.Person", addressbook)
+
     ----------------------------------------------------------------
     local buffer = ByteBuffer.New();
     buffer:WriteShort(Protocal.Message);
@@ -185,6 +189,34 @@ function PromptCtrl.TestSendBinary()
     buffer:WriteByte(ProtocalType.BINARY);
     buffer:WriteString("ffff我的ffffQ靈uuu");
     buffer:WriteInt(200);
+    networkMgr:SendMessage(buffer);
+end
+
+function PromptCtrl.sendYCMsg()
+    local buffer = ByteBuffer.New();
+
+    local body = "0.0.1 2 9000 ashduaisf 1497261132 6a014673f08e861c3dd58af49e649d0c 0"
+    local bodyLen = string.len(body)
+    local sn = 1
+    local msgType = 3
+    local moduleId = 1
+    local cmdId = 1
+
+    -- buffer:WriteShort(6+(bodyLen+1));
+    -- print("WriteShort", 6+(bodyLen+1))
+    buffer:WriteByte(sn);
+    print("WriteByte", sn)
+    buffer:WriteByte(msgType);
+    print("WriteByte", msgType)
+    buffer:WriteByte(moduleId);
+    print("WriteByte", moduleId)
+    buffer:WriteByte(cmdId);
+    print("WriteByte", cmdId)
+    buffer:WriteShort(bodyLen+1);
+    print("WriteShort", bodyLen+1)
+    buffer:WriteString(body);
+    print("WriteString", body)
+
     networkMgr:SendMessage(buffer);
 end
 
